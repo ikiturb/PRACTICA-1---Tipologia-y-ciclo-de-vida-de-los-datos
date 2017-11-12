@@ -7,7 +7,6 @@ anotadores_tabla <- tabla_anotadores[[12]]
 colnames(anotadores_tabla) <- anotadores_tabla[1,1:6]
 anotadores_tabla[1:30,1:6] <-anotadores_tabla[2:31,1:6]
 anotadores_tabla <- anotadores_tabla[1:30,1:6]
-anotadores_tabla
 
 eliminar <- c("\r","\n"," ",0:9)
 for(i in 1:13){anotadores_tabla[[1]] <- gsub(eliminar[i],"",anotadores_tabla[[1]])}
@@ -25,16 +24,49 @@ anotadores_tabla[[6]] <- gsub(",","",anotadores_tabla[[6]])
 anotadores_tabla[[6]] <- as.integer(anotadores_tabla[[6]])
 sapply(anotadores_tabla,class)
 
+calcular_TotalShots <- function(FG,FT){
+        TotalShots <- (FG +FT)
+        return(TotalShots)
+}
+TS=vector(mode='integer', length=30)
+anotadores_tabla = data.frame(anotadores_tabla, TS)
+for(i in 1:30){anotadores_tabla$TS[[i]] <- calcular_TotalShots(anotadores_tabla$FG[[i]],anotadores_tabla$FT[[i]])}
+
+calcular_P3 <- function(PTS,FG,FT){
+        TresPuntos <- (PTS -(FG*2 +FT))
+        return(TresPuntos)
+}
+P3=vector(mode='integer', length=30)
+anotadores_tabla = data.frame(anotadores_tabla, P3)
+for(i in 1:30){anotadores_tabla$P3[[i]] <- calcular_P3(anotadores_tabla$PTS[[i]],anotadores_tabla$FG[[i]],anotadores_tabla$FT[[i]])}
+Tiros123 <- as.integer(0)
+calcular_Porcentaje <- function(TS,Tiros123){
+        Porcentaje <- round ((Tiros123 * 100) / TS, 2)
+        return(Porcentaje)
+}
+P3P=vector(mode='numeric', length=30)
+anotadores_tabla = data.frame(anotadores_tabla, P3P)
+for(i in 1:30){anotadores_tabla$P3P[[i]] <- calcular_Porcentaje(anotadores_tabla$TS[[i]],anotadores_tabla$P3[[i]])}
+
+calcular_P2 <- function(FG,P3){
+        DosPuntos <- (FG - P3)
+        return(DosPuntos)
+}
+P2=vector(mode='integer', length=30)
+anotadores_tabla = data.frame(anotadores_tabla, P2)
+for(i in 1:30){anotadores_tabla$P2[[i]] <- calcular_P2(anotadores_tabla$FG[[i]],anotadores_tabla$P3[[i]])}
+
+P2P=vector(mode='numeric', length=30)
+anotadores_tabla = data.frame(anotadores_tabla, P2P)
+for(i in 1:30){anotadores_tabla$P2P[[i]] <- calcular_Porcentaje(anotadores_tabla$TS[[i]],anotadores_tabla$P2[[i]])}
+
+P1=vector(mode='integer', length=30)
+anotadores_tabla = data.frame(anotadores_tabla, P1)
+for(i in 1:30){anotadores_tabla$P1[[i]] <- anotadores_tabla$FT[[i]]}
 anotadores_tabla
 
-covFG=vector(mode='numeric', length=30)
-NuevosDatos_anotadores = data.frame(anotadores_tabla, covFG)
-NuevosDatos_anotadores$covFG = scale(NuevosDatos_anotadores$FG)
-NuevosDatos_anotadores
+P1P=vector(mode='numeric', length=30)
+anotadores_tabla = data.frame(anotadores_tabla, P1P)
+for(i in 1:30){anotadores_tabla$P1P[[i]] <- calcular_Porcentaje(anotadores_tabla$TS[[i]],anotadores_tabla$P1[[i]])}
 
-
-
-for(j in 2:6){
-anotadores_tabla[[j]] <- gsub(",","",anotadores_tabla[[j]])
-anotadores_tabla[[j]] <- as.numeric(anotadores_tabla[[j]])
-}
+write.csv2(anotadores_tabla, file ="C:\\Iker\\MaximosAnotadores.csv",row.names=FALSE)
