@@ -1,0 +1,40 @@
+library(stringr)
+library(XML)
+maximos_anotadores <- htmlParse("http://www.nba.com/statistics/default_all_time_leaders/AllTimeLeadersPTSQuery.html?topic=4&stat=1",encoding = "UTF-8") 
+tabla_anotadores <- readHTMLTable(maximos_anotadores, stringsAsFactors = FALSE)
+
+anotadores_tabla <- tabla_anotadores[[12]] 
+colnames(anotadores_tabla) <- anotadores_tabla[1,1:6]
+anotadores_tabla[1:30,1:6] <-anotadores_tabla[2:31,1:6]
+anotadores_tabla <- anotadores_tabla[1:30,1:6]
+anotadores_tabla
+
+eliminar <- c("\r","\n"," ",0:9)
+for(i in 1:13){anotadores_tabla[[1]] <- gsub(eliminar[i],"",anotadores_tabla[[1]])}
+anotadores_tabla[[1]] <- sub("([[:punct:]])","",anotadores_tabla[[1]])
+
+anotadores_tabla[[2]] <- gsub(",","",anotadores_tabla[[2]])
+anotadores_tabla[[2]] <- as.integer(anotadores_tabla[[2]])
+anotadores_tabla[[3]] <- gsub(",","",anotadores_tabla[[3]])
+anotadores_tabla[[3]] <- as.integer(anotadores_tabla[[3]])
+anotadores_tabla[[4]] <- gsub(",","",anotadores_tabla[[4]])
+anotadores_tabla[[4]] <- as.integer(anotadores_tabla[[4]])
+anotadores_tabla[[5]] <- gsub(",","",anotadores_tabla[[5]])
+anotadores_tabla[[5]] <- as.numeric(anotadores_tabla[[5]])
+anotadores_tabla[[6]] <- gsub(",","",anotadores_tabla[[6]])
+anotadores_tabla[[6]] <- as.integer(anotadores_tabla[[6]])
+sapply(anotadores_tabla,class)
+
+anotadores_tabla
+
+covFG=vector(mode='numeric', length=30)
+NuevosDatos_anotadores = data.frame(anotadores_tabla, covFG)
+NuevosDatos_anotadores$covFG = scale(NuevosDatos_anotadores$FG)
+NuevosDatos_anotadores
+
+
+
+for(j in 2:6){
+anotadores_tabla[[j]] <- gsub(",","",anotadores_tabla[[j]])
+anotadores_tabla[[j]] <- as.numeric(anotadores_tabla[[j]])
+}
