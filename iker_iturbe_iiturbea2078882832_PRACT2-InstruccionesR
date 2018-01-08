@@ -1,0 +1,244 @@
+MaximosAnotadores <- read.csv2("C:\\Users\\iker\\Desktop\\UOC - Master Data Science\\TipologiaYCicloDeDatos\\Practica2\\MaximosAnotadores.csv",sep=";")
+summary(MaximosAnotadores)
+nrow(MaximosAnotadores)
+
+sapply(MaximosAnotadores,class)
+head(MaximosAnotadores)
+
+MaximosAnotadores <- MaximosAnotadores[1:nrow(MaximosAnotadores),2:13]
+cor(MaximosAnotadores)
+var(MaximosAnotadores)
+
+hist(MaximosAnotadores$P2P)
+
+boxplot(MaximosAnotadores)
+
+print(boxplot.stats(MaximosAnotadores$FG)$out)
+print(boxplot.stats(MaximosAnotadores$FT)$out)
+print(boxplot.stats(MaximosAnotadores$PTS)$out)
+print(boxplot.stats(MaximosAnotadores$TS)$out)
+print(boxplot.stats(MaximosAnotadores$P3)$out)
+print(boxplot.stats(MaximosAnotadores$P3P)$out)
+print(boxplot.stats(MaximosAnotadores$P2)$out)
+print(boxplot.stats(MaximosAnotadores$P1)$out)
+
+MaximosAnotadoresZ <- MaximosAnotadores
+
+#  calculo manual de Z ((inmuebles$valor - mean(inmuebles$valor)) / sd(inmuebles$valor))
+Zetas <- function(valor,media,desviacion){
+        zeta <- ((valor - media) / desviacion)
+        return(as.numeric(zeta))
+}
+
+media_valor_G <- mean(MaximosAnotadores$G)
+media_valor_FG <- mean(MaximosAnotadores$FG)
+media_valor_FT <- mean(MaximosAnotadores$FT)
+media_valor_PPG <- mean(MaximosAnotadores$PPG)
+media_valor_PTS <- mean(MaximosAnotadores$PTS)
+media_valor_TS <- mean(MaximosAnotadores$TS)
+media_valor_P3 <- mean(MaximosAnotadores$P3)
+media_valor_P3P <- mean(MaximosAnotadores$P3P)
+media_valor_P2 <- mean(MaximosAnotadores$P2)
+media_valor_P2P <- mean(MaximosAnotadores$P2P)
+media_valor_P1 <- mean(MaximosAnotadores$P1)
+media_valor_P1P <- mean(MaximosAnotadores$P1P)
+
+desviacion_valor_G <- sd(MaximosAnotadores$G)
+desviacion_valor_FG <- sd(MaximosAnotadores$FG)
+desviacion_valor_FT <- sd(MaximosAnotadores$FT)
+desviacion_valor_PPG <- sd(MaximosAnotadores$PPG)
+desviacion_valor_PTS <- sd(MaximosAnotadores$PTS)
+desviacion_valor_TS <- sd(MaximosAnotadores$TS)
+desviacion_valor_P3 <- sd(MaximosAnotadores$P3)
+desviacion_valor_P3P <- sd(MaximosAnotadores$P3P)
+desviacion_valor_P2 <- sd(MaximosAnotadores$P2)
+desviacion_valor_P2P <- sd(MaximosAnotadores$P2P)
+desviacion_valor_P1 <- sd(MaximosAnotadores$P1)
+desviacion_valor_P1P <- sd(MaximosAnotadores$P1P)
+
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$G[[i]] <- Zetas(MaximosAnotadores$G[[i]],media_valor_G,desviacion_valor_G)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$FG[[i]] <- Zetas(MaximosAnotadores$FG[[i]],media_valor_FG,desviacion_valor_FG)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$FT[[i]] <- Zetas(MaximosAnotadores$FT[[i]],media_valor_FT,desviacion_valor_FT)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$PPG[[i]] <- Zetas(MaximosAnotadores$PPG[[i]],media_valor_PPG,desviacion_valor_PPG)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$PTS[[i]] <- Zetas(MaximosAnotadores$PTS[[i]],media_valor_PTS,desviacion_valor_PTS)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$TS[[i]] <- Zetas(MaximosAnotadores$TS[[i]],media_valor_TS,desviacion_valor_TS)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$P3[[i]] <- Zetas(MaximosAnotadores$P3[[i]],media_valor_P3,desviacion_valor_P3)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$P3P[[i]] <- Zetas(MaximosAnotadores$P3P[[i]],media_valor_P3P,desviacion_valor_P3P)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$P2[[i]] <- Zetas(MaximosAnotadores$P2[[i]],media_valor_P2,desviacion_valor_P2)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$P2P[[i]] <- Zetas(MaximosAnotadores$P2P[[i]],media_valor_P2P,desviacion_valor_P2P)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$P1[[i]] <- Zetas(MaximosAnotadores$P1[[i]],media_valor_P1,desviacion_valor_P1)}
+for(i in 1:nrow(MaximosAnotadoresZ)){MaximosAnotadoresZ$P1P[[i]] <- Zetas(MaximosAnotadores$P1P[[i]],media_valor_P1P,desviacion_valor_P1P)}
+
+boxplot(MaximosAnotadoresZ)
+
+outlier_values_PTS <- boxplot.stats(MaximosAnotadores$PTS)$out
+
+library(car)
+MaximosAnotadores$Position <-as.factor(c("C","PF","SG","SG","C","PF","PF","C","C","PF","C","PG","SF","C","SF","SG","PF","SF","SG","PG","C","SF","SF","SG","PG","PF","C","SF","SF","SG"))
+MaximosAnotadores$Type <- as.factor(c("Ext","Int"))
+
+for(i in 1:nrow(MaximosAnotadores)){
+        if(MaximosAnotadores$Position[i] == "SG"){MaximosAnotadores$Type[[i]] = "Ext"}
+}
+for(i in 1:nrow(MaximosAnotadores)){
+        if(MaximosAnotadores$Position[i] == "SF"){MaximosAnotadores$Type[[i]] = "Ext"}
+}
+for(i in 1:nrow(MaximosAnotadores)){
+        if(MaximosAnotadores$Position[i] == "PG"){MaximosAnotadores$Type[[i]] = "Ext"}
+}
+for(i in 1:nrow(MaximosAnotadores)){
+        if(MaximosAnotadores$Position[i] == "C"){MaximosAnotadores$Type[[i]] = "Int"}
+}
+for(i in 1:nrow(MaximosAnotadores)){
+        if(MaximosAnotadores$Position[i] == "PF"){MaximosAnotadores$Type[[i]] = "Int"}
+}
+
+# Empirical cumulative distribution
+n <- length(MaximosAnotadores$P1P) 
+plot(sort(MaximosAnotadores$P1P),(1:n)/n,type="s",ylim=c(0,1))
+
+# NORMALIDAD
+# test y qqplot de normalidad
+shapiro.test(MaximosAnotadores$G)
+qqnorm(MaximosAnotadores$G)
+qqline(MaximosAnotadores$G)
+
+shapiro.test(MaximosAnotadores$FG)
+qqnorm(MaximosAnotadores$FG)
+qqline(MaximosAnotadores$FG)
+
+shapiro.test(MaximosAnotadores$FT)
+qqnorm(MaximosAnotadores$FT)
+qqline(MaximosAnotadores$FT)
+
+shapiro.test(MaximosAnotadores$PPG)
+qqnorm(MaximosAnotadores$PPG)
+qqline(MaximosAnotadores$PPG)
+
+shapiro.test(MaximosAnotadores$PTS)
+qqnorm(MaximosAnotadores$PTS)
+qqline(MaximosAnotadores$PTS)
+
+shapiro.test(MaximosAnotadores$TS)
+qqnorm(MaximosAnotadores$TS)
+qqline(MaximosAnotadores$TS)
+
+shapiro.test(MaximosAnotadores$P3)
+qqnorm(MaximosAnotadores$P3)
+qqline(MaximosAnotadores$P3)
+
+shapiro.test(MaximosAnotadores$P3P)
+qqnorm(MaximosAnotadores$P3P)
+qqline(MaximosAnotadores$P3P)
+
+shapiro.test(MaximosAnotadores$P2)
+qqnorm(MaximosAnotadores$P2)
+qqline(MaximosAnotadores$P2)
+
+shapiro.test(MaximosAnotadores$P2P)
+qqnorm(MaximosAnotadores$P2P)
+qqline(MaximosAnotadores$P2P)
+
+shapiro.test(MaximosAnotadores$P1)
+qqnorm(MaximosAnotadores$P1)
+qqline(MaximosAnotadores$P1)
+
+shapiro.test(MaximosAnotadores$P1P)
+qqnorm(MaximosAnotadores$P1P)
+qqline(MaximosAnotadores$P1P)
+
+# HOMOGENEIDAD
+library(car)
+bartlett.test(G ~ Position, data=MaximosAnotadores)
+bartlett.test(FT ~ Position, data=MaximosAnotadores)
+bartlett.test(PPG ~ Position, data=MaximosAnotadores)
+leveneTest(FG ~ Position, data=MaximosAnotadores)
+leveneTest(PTS ~ Position, data=MaximosAnotadores)
+leveneTest(TS ~ Position, data=MaximosAnotadores)
+leveneTest(P3 ~ Position, data=MaximosAnotadores)
+leveneTest(P3P ~ Position, data=MaximosAnotadores)
+bartlett.test(P2 ~ Position, data=MaximosAnotadores)
+bartlett.test(P2P ~ Position, data=MaximosAnotadores)
+bartlett.test(P1 ~ Position, data=MaximosAnotadores)
+bartlett.test(P1P ~ Position, data=MaximosAnotadores)
+
+# GRAFICAS GRUPOS
+
+MaximosAnotadoresP3PExt <- MaximosAnotadores$P3P[MaximosAnotadores$Type=="Ext"]
+MaximosAnotadoresP3PInt <- MaximosAnotadores$P3P[MaximosAnotadores$Type=="Int"]
+par(mfrow=c(2,1)) 
+hist(MaximosAnotadoresP3PExt,breaks=20,col="white") 
+hist(MaximosAnotadoresP3PInt,breaks=20,col="grey") 
+par(mfrow=c(1,1)
+
+MaximosAnotadoresP2PExt <- MaximosAnotadores$P2P[MaximosAnotadores$Type=="Ext"]
+MaximosAnotadoresP2PInt <- MaximosAnotadores$P2P[MaximosAnotadores$Type=="Int"]
+par(mfrow=c(2,1)) 
+hist(MaximosAnotadoresP2PExt,breaks=20,col="white") 
+hist(MaximosAnotadoresP2PInt,breaks=20,col="grey") 
+par(mfrow=c(1,1)
+
+MaximosAnotadoresP1PExt <- MaximosAnotadores$P1P[MaximosAnotadores$Type=="Ext"]
+MaximosAnotadoresP1PInt <- MaximosAnotadores$P1P[MaximosAnotadores$Type=="Int"]
+par(mfrow=c(2,1)) 
+hist(MaximosAnotadoresP1PExt,breaks=20,col="white") 
+hist(MaximosAnotadoresP1PInt,breaks=20,col="grey") 
+par(mfrow=c(1,1)
+
+#Pruebas estadísticas
+wilcox.test(MaximosAnotadores$P3P~MaximosAnotadores$Type, var.equal=T)
+t.test(MaximosAnotadores$P2P~MaximosAnotadores$Type, var.equal=T)
+t.test(MaximosAnotadores$P1P~MaximosAnotadores$Type, var.equal=T)
+
+
+
+
+
+
+
+cor(MaximosAnotadores)
+bartlett.test(P3P ~ Type, data=MaximosAnotadores)
+wilcox.test(P3P ~ Type, data=MaximosAnotadores)
+t.test(P3P ~ Type)
+var.test(MaximosAnotadores$P3P~MaximosAnotadores$Type, var.equal=T)
+
+install.packages("nortest")
+library(nortest)
+ad.test(MaximosAnotadores$P3P)
+qqnorm(MaximosAnotadores$P3P)
+qqline(MaximosAnotadores$P3P, col = "red")
+shapiro.test(MaximosAnotadores)
+leveneTest(P3P ~ Position, data=MaximosAnotadores)
+
+summary(MaximosAnotadores)
+var.test(MaximosAnotadores$P3P~MaximosAnotadores$Position, var.equal=T)
+
+t.test(MaximosAnotadores$P3P, MaximosAnotadores$P2P, paired=T)
+
+wilcox.test(MaximosAnotadores$P3P, MaximosAnotadores$P2P, paired=T)
+wilcox.test(MaximosAnotadores$P3P, mu=4.373)
+wilcox.test(MaximosAnotadores$P3P,MaximosAnotadores$PTS,paired=FALSE,alternative="less")
+
+shapiro.test(MaximosAnotadoresZ$P3P)
+outlier_values <- boxplot.stats(inputData$pressure_height)$out
+
+
+t.test(MaximosAnotadores$G, mu=1200)$p.value
+
+aggregate(Petal.Length ~ Species, data = iris, FUN = var)
+leveneTest(P3P ~ PTS, data=MaximosAnotadores)
+fligner.test(P3P ~ PTS, data=MaximosAnotadores)
+var.test(var(PTS)~var(P3P))
+bartlett.test(P3P ~ PTS, data=MaximosAnotadores)
+bartlett.test(P3P,PTS)
+
+
+bartlett.test(MaximosAnotadores$PTS~MaximosAnotadores$P3P)
+bartlett.test(PTS~P3P)
+ var.test(PTS~P3P)
+
+
+MaximosAnotadores[
+
+write.csv2(MaximosAnotadores, file ="C:\\Users\\iker\\Desktop\\UOC - Master Data Science\\TipologiaYCicloDeDatos\\Practica2\\MaximosAnotadores-Salida.csv",row.names=FALSE)
+
